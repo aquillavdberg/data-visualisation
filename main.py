@@ -27,51 +27,67 @@ y = [1, 1, 2]
 
 # Determine where the visualization will be rendered
 output_file('output_file_test.html', 
-            title='Empty Bokeh Figure')  # Render to static HTML, or 
+            title='sales data')  # Render to static HTML, or 
 output_notebook()  # Render inline in a Jupyter Notebook
 
 # load csv file
-stats_6 = pd.read_csv('sales_202106.csv', parse_dates=['Transaction Date'])
-stats_7 = pd.read_csv('sales_202107.csv', parse_dates=['Transaction Date'])
-stats_8 = pd.read_csv('sales_202108.csv', parse_dates=['Transaction Date'])
-stats_9 = pd.read_csv('sales_202109.csv', parse_dates=['Transaction Date'])
-stats_10 = pd.read_csv('sales_202110.csv', parse_dates=['Transaction Date'])
-stats_11 = pd.read_csv('sales_202111.csv', parse_dates=['Order Charged Date'])
-stats_12 = pd.read_csv('sales_202112.csv', parse_dates=['Order Charged Date'])
+stats_6 = pd.read_csv('sales_202106.csv', parse_dates=['Transaction Date'], index_col=['Transaction Date'])
+stats_7 = pd.read_csv('sales_202107.csv', parse_dates=['Transaction Date'], index_col=['Transaction Date'])
+stats_8 = pd.read_csv('sales_202108.csv', parse_dates=['Transaction Date'], index_col=['Transaction Date'])
+stats_9 = pd.read_csv('sales_202109.csv', parse_dates=['Transaction Date'], index_col=['Transaction Date'])
+stats_10 = pd.read_csv('sales_202110.csv', parse_dates=['Transaction Date'], index_col=['Transaction Date'])
+stats_11 = pd.read_csv('sales_202111.csv', parse_dates=['Order Charged Date'], index_col=['Order Charged Date'])
+stats_12 = pd.read_csv('sales_202112.csv', parse_dates=['Order Charged Date'], index_col=['Order Charged Date'])
 
-# index=dates, columns=['A', 'B', 'C', 'D']
+# [(stats_6['Transaction Type'] == 'Charge') | (stats_6['Transaction Type'] == 'Google fee') | (stats_6['Transaction Type'] == 'Charge refund') | (stats_6['Transaction Type'] == 'Google fee refund')]
 
-print(stats_6)
-# , 'Transaction Type'
+stats_6_filtered = (stats_6
+            .loc[:, ['Transaction Type', 'Amount (Merchant Currency)']]
+            .sort_values(['Transaction Date', 'Transaction Type'])
+            )
+print("stats_6_filtered")
+print(stats_6_filtered)
 
-# (
-stats_6['Amount (Merchant Currency)'] = stats_6.groupby(['Transaction Date'])['Amount (Merchant Currency)'].transform(sum)
-#    .loc[:, lambda df: ['Transaction Date', 'Transaction Type', 'Amount (Merchant Currency)'] ])
-# print(stats_6)
+stats_6_grouped = stats_6_filtered.groupby(['Transaction Date', 'Transaction Type'])
+
+stats_6_sum = stats_6_grouped.sum()['Amount (Merchant Currency)']
+# print("stats_6_sum")
+# print(stats_6_sum)
+
+stats_6_sum_charge = stats_6_sum.loc[:, 'Charge'].to_frame()
+# print("stats_6_sum_charge")
+# print(stats_6_sum_charge)
+
+stats_6_sum_Google_fee = stats_6_sum.loc[:, 'Google fee'].to_frame()
+# print("stats_6_sum_Google fee")
+# print(stats_6_sum_Google_fee)
+
+stats_6_sum_Charge_refund = stats_6_sum.loc[:, 'Charge refund'].to_frame()
+# print("stats_6_sum_Charge refund")
+# print(stats_6_sum_Charge_refund)
+
+stats_6_sum_Google_refund = stats_6_sum.loc[:, 'Google fee refund'].to_frame()
+# print("stats_6_sum_Google_refund")
+# print(stats_6_sum_Google_refund)
 
 # Create a ColumnDataSource
-stats_6_cds = ColumnDataSource(stats_6)
-stats_7_cds = ColumnDataSource(stats_7)
-stats_8_cds = ColumnDataSource(stats_8)
-stats_9_cds = ColumnDataSource(stats_9)
-stats_10_cds = ColumnDataSource(stats_10)
-stats_11_cds = ColumnDataSource(stats_11)
-stats_12_cds = ColumnDataSource(stats_12)
-
-# west_top_2 = (stats_6[(stats_6['Transaction Type'] == 'Charge') | (stats_6['Transaction Type'] == 'Google fee') | (stats_6['Transaction Type'] == 'Charge refund') | (stats_6['Transaction Type'] == 'Google fee refund')]
-#             .loc[:, ['Transaction Date', 'Transaction Type', 'Amount (Merchant Currency)']]
-#             .sort_values(['Transaction Type','Transaction Date']))
-# west_top_2.head()
+stats_6_sum_cds = ColumnDataSource(stats_6_sum.to_frame())
+stats_6_sum_charge_cds = ColumnDataSource(stats_6_sum_charge)
+stats_6_sum_Google_fee_cds = ColumnDataSource(stats_6_sum_Google_fee)
+stats_6_sum_Charge_refund_cds = ColumnDataSource(stats_6_sum_Charge_refund)
+stats_6_sum_Google_refund_cds = ColumnDataSource(stats_6_sum_Google_refund)
+# stats_7_cds = ColumnDataSource(stats_7)
+# stats_8_cds = ColumnDataSource(stats_8)
+# stats_9_cds = ColumnDataSource(stats_9)
+# stats_10_cds = ColumnDataSource(stats_10)
+# stats_11_cds = ColumnDataSource(stats_11)
+# stats_12_cds = ColumnDataSource(stats_12)
 
 # Create the views for transaction type
-charge_stats_6_view = CDSView(source=stats_6_cds
-                       ,filters=[GroupFilter(column_name='Transaction Type', group='Charge')])
-# Google_fee_stats_6_view = CDSView(source=stats_6_cds
-#                        ,filters=[GroupFilter(column_name='Transaction Type', group='Google fee')])
-Charge_refund_stats_6_view = CDSView(source=stats_6_cds
-                       ,filters=[GroupFilter(column_name='Transaction Type', group='Charge refund')])
-# Google_fee_refund_stats_6_view = CDSView(source=stats_6_cds
-#                        ,filters=[GroupFilter(column_name='Transaction Type', group='Google fee refund')])
+charge_stats_6_view = CDSView(source=stats_6_sum_charge_cds)
+Google_fee_stats_6_view = CDSView(source=stats_6_sum_Google_fee_cds)
+Charge_refund_stats_6_view = CDSView(source=stats_6_sum_Charge_refund_cds)
+Google_fee_refund_stats_6_view = CDSView(source=stats_6_sum_Google_refund_cds)
 
 # Format the tooltip
 tooltips = [
@@ -93,32 +109,32 @@ stats_6_fig = figure(x_axis_type='datetime',
 
 stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#007A33',
               legend_label='charges',
-              source=stats_6_cds, view=charge_stats_6_view)
+              source=stats_6_sum_charge_cds, view=charge_stats_6_view)
 
-# stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#CE1141',
-#               legend_label='Google fees',
-#               source=stats_6_cds, view=Google_fee_stats_6_view)
+stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#CE1141',
+              legend_label='Google fees',
+              source=stats_6_sum_Google_fee_cds, view=Google_fee_stats_6_view)
 
 stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#006BB6',
               legend_label='charge refunds',
-              source=stats_6_cds, view=Charge_refund_stats_6_view)
+              source=stats_6_sum_Charge_refund_cds, view=Charge_refund_stats_6_view)
 
-# stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#007B43',
-#               legend_label='Google refunds',
-#               source=stats_6_cds, view=Google_fee_refund_stats_6_view)
+stats_6_fig.step('Transaction Date', 'Amount (Merchant Currency)', color='#007B43',
+              legend_label='Google refunds',
+              source=stats_6_sum_Google_refund_cds, view=Google_fee_refund_stats_6_view)
 
 # Create two panels, one for each conference
-stats_6_panel = TabPanel(child=stats_6_fig, title="stats of june")  # noqa
-# west_panel = TabPanel(child=west_fig, title="Western Conference")  # noqa
+stats_6_panel = TabPanel(child=stats_6_fig, title="stats of june")
+# west_panel = TabPanel(child=west_fig, title="Western Conference")
 
 # Assign the panels to Tabs
 tabs = Tabs(tabs=[stats_6_panel])
 
-# Add square representing each player
+# Add square representing each datapoint
 stats_6_fig.square(
     x="Transaction Date",
     y="Amount (Merchant Currency)",
-    source=stats_6_cds,
+    source= stats_6_sum_cds, 
     color="royalblue",
     selection_color="deepskyblue",
     nonselection_color="lightgray",
