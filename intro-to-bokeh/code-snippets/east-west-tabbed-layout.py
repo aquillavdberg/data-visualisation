@@ -82,7 +82,7 @@ west_panel = TabPanel(child=west_fig, title="Western Conference")  # noqa
 # Assign the panels to Tabs
 
 tabs = Tabs(tabs=[west_panel, east_panel])
-# tabs werkt niet?
+
 
 # Show the tabbed layout
 show(tabs)  # noqa
