@@ -12,6 +12,7 @@ from bokeh.io import output_file, output_notebook
 from bokeh.plotting import figure, show
 from bokeh.models import ColumnDataSource  # noqa
 from bokeh.layouts import row, column, gridplot  # noqa
+# from bokeh.plotting import reset_output
 # from bokeh.models.widgets import Tabs, Panel  # noqa
 
 # Prepare the data
@@ -29,3 +30,4 @@ fig = figure()  # Instantiate a figure() object
 
 # Preview and save
 show(fig)  # See what I made, and save if I like it
+# reset_output() tussen show calls

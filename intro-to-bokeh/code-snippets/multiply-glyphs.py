@@ -1,7 +1,7 @@
 import numpy as np
 
 # Bokeh libraries
-from bokeh.io import output_notebook
+from bokeh.io import output_notebook, output_file
 from bokeh.plotting import figure, show
 
 # My word count data
@@ -11,12 +11,13 @@ cumulative_words = np.cumsum(daily_words)
 
 # Output the visualization directly in the notebook
 output_notebook()
+output_file("multiply_glyphs.html")
 
 # Create a figure with a datetime type x-axis
 fig = figure(
     title="My Tutorial Progress",
-    plot_height=400,
-    plot_width=700,
+    height=400,
+    width=700,
     x_axis_label="Day Number",
     y_axis_label="Words Written",
     x_minor_ticks=2,
@@ -31,7 +32,7 @@ fig.vbar(
     top=daily_words,
     color="blue",
     width=0.75,
-    legend="Daily",
+    legend_label="Daily",
 )
 
 # The cumulative sum will be a trend line
@@ -40,7 +41,7 @@ fig.line(
     y=cumulative_words,
     color="gray",
     line_width=1,
-    legend="Cumulative",
+    legend_label="Cumulative",
 )
 
 # Put the legend in the upper left corner

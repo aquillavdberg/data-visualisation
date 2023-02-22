@@ -3,6 +3,12 @@ from bokeh.plotting import figure, show
 from bokeh.io import output_file
 from bokeh.models import ColumnDataSource, CDSView, GroupFilter
 from bokeh.layouts import row
+import pandas as pd
+
+# Read the csv files
+player_stats = pd.read_csv('2017-18_playerBoxScore.csv', parse_dates=['gmDate'])
+team_stats = pd.read_csv('2017-18_teamBoxScore.csv', parse_dates=['gmDate'])
+standings = pd.read_csv('2017-18_standings.csv', parse_dates=['stDate'])
 
 # Output inline in the notebook
 output_file("lebron-vs-durant.html", title="LeBron James vs. Kevin Durant")
@@ -25,7 +31,7 @@ durant_view = CDSView(source=player_gm_stats, filters=durant_filters)
 
 # Consolidate the common keyword arguments in dicts
 common_figure_kwargs = {
-    "plot_width": 400,
+    "width": 400,
     "x_axis_label": "Points",
     "toolbar_location": None,
 }
@@ -39,12 +45,12 @@ common_circle_kwargs = {
 common_lebron_kwargs = {
     "view": lebron_view,
     "color": "#002859",
-    "legend": "LeBron James",
+    "legend_label": "LeBron James",
 }
 common_durant_kwargs = {
     "view": durant_view,
     "color": "#FFC324",
-    "legend": "Kevin Durant",
+    "legend_label": "Kevin Durant",
 }
 
 # Create the two figures and draw the data

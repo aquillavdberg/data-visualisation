@@ -1,11 +1,23 @@
+# verschil met v1 zit vanaf line 25
 # Bokeh libraries
 from bokeh.plotting import figure, show
 from bokeh.io import output_file
 from bokeh.models import ColumnDataSource
+import pandas as pd
+
+# Read the csv files
+player_stats = pd.read_csv('2017-18_playerBoxScore.csv', parse_dates=['gmDate'])
+team_stats = pd.read_csv('2017-18_teamBoxScore.csv', parse_dates=['gmDate'])
+standings = pd.read_csv('2017-18_standings.csv', parse_dates=['stDate'])
+
+west_top_2 = (standings[(standings['teamAbbr'] == 'HOU') | (standings['teamAbbr'] == 'GS')]
+               .loc[:, ['stDate', 'teamAbbr', 'gameWon']]
+               .sort_values(['teamAbbr','stDate']))
+west_top_2.head()
 
 # Output to file
 output_file(
-    "west-top-2-standings-race.html",
+    "west-top-2-standings-racev0.html",
     title="Western Conference Top 2 Teams Wins Race",
 )
 
@@ -20,8 +32,8 @@ warriors_cds = ColumnDataSource(warriors_data)
 # Create and configure the figure
 fig = figure(
     x_axis_type="datetime",
-    plot_height=300,
-    plot_width=600,
+    height=300,
+    width=600,
     title="Western Conference Top 2 Teams Wins Race, 2017-18",
     x_axis_label="Date",
     y_axis_label="Wins",
@@ -30,18 +42,22 @@ fig = figure(
 
 # Render the race as step lines
 fig.step(
-    "stDate", "gameWon", color="#CE1141", legend="Rockets", source=rockets_cds
+    "stDate",
+    "gameWon",
+    color="#CE1141",
+    legend_label="Rockets",
+    source=rockets_cds
 )
 fig.step(
     "stDate",
     "gameWon",
     color="#006BB6",
-    legend="Warriors",
+    legend_label="Warriors",
     source=warriors_cds,
 )
 
 # Move the legend to the upper left corner
-fig.legend.location = "top_left"
+# fig.legend.location = "top_left"
 
 # Show the plot
 show(fig)

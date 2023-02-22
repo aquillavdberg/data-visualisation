@@ -32,8 +32,8 @@ raptors_view = CDSView(
 # Create and configure the figure
 east_fig = figure(
     x_axis_type="datetime",
-    plot_height=300,
-    plot_width=600,
+    height=300,
+    width=600,
     title="Eastern Conference Top 2 Teams Wins Race, 2017-18",
     x_axis_label="Date",
     y_axis_label="Wins",
@@ -45,7 +45,7 @@ east_fig.step(
     "stDate",
     "gameWon",
     color="#007A33",
-    legend="Celtics",
+    legend_label="Celtics",
     source=standings_cds,
     view=celtics_view,
 )
@@ -53,7 +53,7 @@ east_fig.step(
     "stDate",
     "gameWon",
     color="#CE1141",
-    legend="Raptors",
+    legend_label="Raptors",
     source=standings_cds,
     view=raptors_view,
 )

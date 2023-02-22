@@ -1,9 +1,11 @@
 # Bokeh Libraries
-from bokeh.io import output_notebook
+# from bokeh.io import output_notebook
+from bokeh.io import output_file, output_notebook
 from bokeh.plotting import figure, show
 
 # The figure will be rendered inline in my Jupyter Notebook
 output_notebook()
+output_file("no_grid.html")
 
 # Example figure
 fig = figure(
@@ -11,9 +13,9 @@ fig = figure(
     background_fill_alpha=0.5,
     border_fill_color="blue",
     border_fill_alpha=0.25,
-    plot_height=300,
-    plot_width=500,
-    h_symmetry=True,
+    height=300,
+    width=500,
+    # h_symmetry=True,
     x_axis_label="X Label",
     x_axis_type="datetime",
     x_axis_location="above",

@@ -1,4 +1,18 @@
+# Bokeh Libraries
+from bokeh.plotting import figure, show
+from bokeh.io import output_file
+from bokeh.models import (
+    ColumnDataSource,
+    CategoricalColorMapper,
+    NumeralTickFormatter,
+)
+from bokeh.layouts import gridplot
 import pandas as pd
+
+# Output inline in the notebook
+output_file(
+    "read_data.html", title="data"
+)
 
 # Read the csv files
 player_stats = pd.read_csv(
@@ -104,3 +118,5 @@ for _, row in phi_gm_stats_2.iterrows():
 
 # Add the win_loss data to the DataFrame
 phi_gm_stats_2["winLoss"] = win_loss
+
+# only data processing
