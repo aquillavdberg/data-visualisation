@@ -26,7 +26,7 @@ x = [1, 2, 1]
 y = [1, 1, 2]
 
 # Determine where the visualization will be rendered
-output_file('output_file_test.html', 
+output_file('sales_volume.html', 
             title='sales data')  # Render to static HTML, or 
 output_notebook()  # Render inline in a Jupyter Notebook
 
