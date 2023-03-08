@@ -24,6 +24,9 @@ gdf.columns = ['country', 'country_code', 'geometry']
 
 gdf = gdf.drop(gdf.index[159]) #remove Antarctica
 
+#----------------------------------------------------#
+#TUTORIAL: Met OBESITY
+#----------------------------------------------------#
 #"""
 datafile = 'obesity.csv'
 
@@ -82,6 +85,10 @@ output_notebook()
 #Display figure.
 show(p)
 #"""
+
+#----------------------------------------------------#
+#UITWERKING: met SALES
+#----------------------------------------------------#
 """
 datafile = 'sales_202106.csv'
 
