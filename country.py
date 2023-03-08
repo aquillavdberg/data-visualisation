@@ -38,6 +38,9 @@ def render(country):
                     source=country_panel_list[country][0], view=country_panel_list[country][1])
     return country_fig
 
+def update(attrname, old, new):
+    reset_output()
+    show(row(children =[menu, render(menu.value)]))
 
 df_ratings_country = file_to_pd(stats_ratings_country)
 
@@ -64,15 +67,11 @@ for country in list_of_countries:
 # country_fig.legend.click_policy = "hide"
 menu = Select(title="Countries", value="AR", options=list_of_countries)
 # menu.js_link('value', country_fig)
+# menu.on_change('value', update)
 menu.js_on_change("value", CustomJS(code="""
     console.log('select: value=' + this.value, this.toString())
 """))
 
-def callback(attr, old, new):
-    for country in list_of_countries:
-        if menu.value == country:
-            reset_output()
-            show(row(children =[menu, render(country)]))
 
 
 # Assign the panels to Tabs
